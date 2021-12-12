@@ -1,28 +1,24 @@
-package io.github.pps5.annotationsample.statusbar
+package io.github.pps5.annotationsample.logging
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.github.pps5.annotationsample.R
-import io.github.pps5.annotationsample.statusbar.annotation.StatusBar
 
-class StatusBarActivity : AppCompatActivity() {
+class LifecycleLoggingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment_container)
 
+        val lifecycleLogger = LifecycleLogger()
         supportFragmentManager.addFragmentOnAttachListener { _, fragment ->
-            val statusBarAnnotation = fragment::class.java.getAnnotation(StatusBar::class.java)
-            if (statusBarAnnotation != null) {
-                window.statusBarColor = statusBarAnnotation.color.color
-            }
+            fragment.lifecycle.addObserver(lifecycleLogger)
         }
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, RedFragment())
+                .replace(R.id.container, AllEventFragment())
                 .commit()
         }
     }
-
 }
