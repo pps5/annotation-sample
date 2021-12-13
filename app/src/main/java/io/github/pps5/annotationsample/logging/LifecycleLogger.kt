@@ -14,13 +14,15 @@ class LifecycleLogger : LifecycleEventObserver {
             return
         }
 
-        val annotation = source::class.java.getAnnotation(LogLifecycleEvent::class.java)
-        if (annotation != null) {
-            if (annotation.targetEvents.contains(Lifecycle.Event.ON_ANY) ||
-                annotation.targetEvents.contains(event)
-            ) {
-                Log.d(source::class.java.canonicalName, "lifecycle event: ${event.name}")
-            }
+        val targetEvents = source::class.java
+            .getAnnotation(LogLifecycleEvent::class.java)
+            ?.targetEvents
+            .orEmpty()
+
+        if (targetEvents.contains(Lifecycle.Event.ON_ANY) ||
+            targetEvents.contains(event)
+        ) {
+            Log.d(source::class.java.canonicalName, "lifecycle event: ${event.name}")
         }
     }
 }
